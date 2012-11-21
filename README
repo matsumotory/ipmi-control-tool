@@ -14,6 +14,11 @@ ipmi-control.pl - control ipmitool
     -help -h                        brief help message
     -version -v                     brief version
 
+ ipmi_taget.list
+    #host ipmit_ip
+    example.com 192.168.0.1
+    example.jp  192.168.0.2
+
 =head1 AUTHOR
 
 MATSUMOTO Ryosuke
