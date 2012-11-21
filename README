@@ -1,0 +1,26 @@
+=head1 NAME
+
+ipmi-control.pl - control ipmitool
+
+=head1 SYNOPSIS
+
+ ./ipmi-control.pl -t ${TARGET} -m ${METHOD}
+
+    ex) ./ipmi-control.pl -t example.cm -m status
+
+ Options:
+    -target -t                      control target host or ip or all
+    -method -m                      control methods(on off reboot reset status hwstatus laninfo)
+    -help -h                        brief help message
+    -version -v                     brief version
+
+=head1 AUTHOR
+
+MATSUMOTO Ryosuke
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
