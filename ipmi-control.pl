@@ -52,9 +52,10 @@ my $METHOD_MAP = {
 };
 
 if (exists $METHOD_MAP->{$method}) {
-    print "$target:\t";
-    foreach my $ip (get_management_ip($target)) {
-        print $METHOD_MAP->{$method}->($ip);
+    my $ips = get_management_ip($target);
+    foreach my $host (keys %$ips) {
+        print "$host:\t";
+        print $METHOD_MAP->{$method}->($ips->{$host});
     }
 } else {
     print "NG: excuted method error. target=($target), method=($method)\n";
@@ -113,12 +114,13 @@ sub go_console {
 sub go_hwstatus {
     my $management_ip = shift;
     print "summarizing hw status... just a moment\n";
-    return `$IPMI_CMD -H $management_ip -U $IPMI_USER -P "$IPMI_PASS" sdr`;
+    return "\n" . `$IPMI_CMD -H $management_ip -U $IPMI_USER -P "$IPMI_PASS" sdr`;
 }
 
 sub go_laninfo {
     my $management_ip = shift;
-    return `$IPMI_CMD -H $management_ip -U $IPMI_USER -P "$IPMI_PASS" lan print 1`;
+    print "summarizing lan info... just a moment\n";
+    return "\n" . `$IPMI_CMD -H $management_ip -U $IPMI_USER -P "$IPMI_PASS" lan print 1`;
 }
 
 sub get_management_ip {
@@ -126,6 +128,8 @@ sub get_management_ip {
 
     my ($global_ip, $management_ip);
     my @management_ips = ();
+    my @global_ips = ();
+    my $ips;
 
     open(DB, "< $IP_LIST");
     my @db = <DB>;
@@ -135,17 +139,17 @@ sub get_management_ip {
         foreach my $data (@db) {
             chomp($data);
             ($global_ip, $management_ip) = split(/\t| +/, $data);
-            push @management_ips, $management_ip;
+            $ips->{$global_ip} = $management_ip;
         }
-        return @management_ips;
+        return $ips;
     } else {
         foreach my $data (@db) {
             chomp($data);
             ($global_ip, $management_ip) = split(/\t| +/, $data);
 
             if ($global_ip eq $target) {
-                push @management_ips, $management_ip;
-                return @management_ips;
+                $ips->{$global_ip} = $management_ip;
+                return $ips;
             }
         }
         print "NG: no such target($target)\n";
