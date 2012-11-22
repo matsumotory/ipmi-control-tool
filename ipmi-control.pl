@@ -54,7 +54,7 @@ my $METHOD_MAP = {
 if (exists $METHOD_MAP->{$method}) {
     print "$target:\t";
     foreach my $ip (get_management_ip($target)) {
-        print "OK: " . $METHOD_MAP->{$method}->($ip);
+        print $METHOD_MAP->{$method}->($ip);
     }
 } else {
     print "NG: excuted method error. target=($target), method=($method)\n";
